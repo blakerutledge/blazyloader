@@ -1,11 +1,21 @@
 {
-  "name": "blazyloader",
-  "version": "1.0.0",
-  "description": "Lazy load and unload media",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Blake Rutledge",
-  "license": "MIT"
+    "name": "blazyloader",
+    "version": "0.1.0",
+    "description": "Lazy load and unload media",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Blake Rutledge",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/blakerutledge/blazyloader.git"
+    },
+    "keywords": [
+        "lazy",
+        "lazyload",
+        "blazy",
+        "blazyloader"
+    ]
 }
