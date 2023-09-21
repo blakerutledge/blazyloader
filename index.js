@@ -8,7 +8,7 @@ export default class Layzr extends EventBundler {
         this.ready = false
 
         // Identifier used to select which html nodes are to be lazy loaded
-        this.tag = options.src || 'lazy-src'
+        this.tag = options.src || 'blazy-src'
 
         // Unload mode
         this.unload = ( options.unload === true ) || false
@@ -65,8 +65,8 @@ export default class Layzr extends EventBundler {
             let visible = o.isIntersecting
 
             let unset = (
-                node.dataset.lazy_loading !== 'true' &&
-                node.dataset.lazy_loaded !== 'true'
+                node.dataset.blazy_loading !== 'true' &&
+                node.dataset.blazy_loaded !== 'true'
             )
 
             if ( visible && unset ) {
@@ -118,10 +118,10 @@ export default class Layzr extends EventBundler {
         }
 
         // Update the state flags
-        node.dataset.lazy_loading = true
+        node.dataset.blazy_loading = true
 
         // Emit the event
-        this.emit( 'lazy:set', node )
+        this.emit( 'blazy:set', node )
 
         // Add the load listener
         if ( type === 'video' ) {
@@ -159,11 +159,11 @@ export default class Layzr extends EventBundler {
         }
 
         // Update the state flags
-        if ( node.dataset.lazy_loading ) {
-            node.dataset.lazy_aborted = true
+        if ( node.dataset.blazy_loading ) {
+            node.dataset.blazy_aborted = true
         }
-        node.dataset.lazy_loading = false
-        node.dataset.lazy_loaded = false
+        node.dataset.blazy_loading = false
+        node.dataset.blazy_loaded = false
 
         // Remove the event listener
         node.removeEventListener( 'load', () => {
@@ -171,25 +171,25 @@ export default class Layzr extends EventBundler {
         }, { once: true } )
 
         // Emit the event
-        this.emit( 'lazy:unset', node )
+        this.emit( 'blazy:unset', node )
         
     }
 
     loaded( node ) {
         
         // Aborted load
-        if ( node.dataset.lazy_aborted ) {
-            node.dataset.lazy_aborted = false
-            node.dataset.lazy_loading = false
-            node.dataset.lazy_loaded = false
+        if ( node.dataset.blazy_aborted ) {
+            node.dataset.blazy_aborted = false
+            node.dataset.blazy_loading = false
+            node.dataset.blazy_loaded = false
         }
         else {
             // Update the state flags
-            node.dataset.lazy_loading = false
-            node.dataset.lazy_loaded = true
+            node.dataset.blazy_loading = false
+            node.dataset.blazy_loaded = true
             
             // Emit the event
-            this.emit( 'lazy:loaded', node )
+            this.emit( 'blazy:loaded', node )
         }
         
     }
