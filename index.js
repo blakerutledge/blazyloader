@@ -1,4 +1,4 @@
-export default class Layzr {
+export default class BlazyLoader {
 
     constructor( options ) {
         
@@ -46,6 +46,7 @@ export default class Layzr {
                 root: this.container,
                 rootMargin: `${100 * 0.5 * ( this.view_scale - 1.0 )}% 0% ${100 * 0.5 * ( this.view_scale - 1.0 )}px 0%`,
                 threshold: 0,
+                trackVisibility: false
             },
 
         )
@@ -58,7 +59,7 @@ export default class Layzr {
 
     }
 
-        on( name, handler ) {
+    on( name, handler ) {
         this.events[ name ] = handler
     }
 
@@ -154,6 +155,8 @@ export default class Layzr {
 
         // Update the state flags
         node.dataset.blazy_loading = true
+        node.dataset.blazy_aborted = false
+        node.dataset.blazy_loaded = false
 
         // Emit the event
         this.emit( 'blazy:set', node )
@@ -197,6 +200,10 @@ export default class Layzr {
         if ( node.dataset.blazy_loading ) {
             node.dataset.blazy_aborted = true
         }
+        else {
+            node.dataset.blazy_aborted = false
+        }
+
         node.dataset.blazy_loading = false
         node.dataset.blazy_loaded = false
 
