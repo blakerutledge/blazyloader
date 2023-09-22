@@ -1,4 +1,4 @@
-# 🔥 BlazyLoader
+# BlazyLoader 🔥
 
 Why another lazy loader? Well, I really needed a lazy _unloader,_ and a callback system to allow for slick animations when media has _finished_ loading.
 

@@ -197,7 +197,7 @@ export default class BlazyLoader {
         }
 
         // Update the state flags
-        if ( node.dataset.blazy_loading ) {
+        if ( node.dataset.blazy_loading === 'true' ) {
             node.dataset.blazy_aborted = true
         }
         else {
