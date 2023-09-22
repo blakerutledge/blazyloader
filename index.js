@@ -1,8 +1,9 @@
-export default class Layzr extends EventBundler {
+export default class Layzr {
 
     constructor( options ) {
         
-        super()
+        // Events
+        this.events = {}
 
         // Set status flag that we are ready to use the instance
         this.ready = false
@@ -54,6 +55,40 @@ export default class Layzr extends EventBundler {
 
         // We are ready for external use
         this.ready = true
+
+    }
+
+        on( name, handler ) {
+        this.events[ name ] = handler
+    }
+
+    once( name, handler ) {
+        handler._once = true
+        this.on( name, handler )
+    }
+
+    remove( name ) {
+        if ( this.events[ name ] !== undefined ) {
+            this.events[ name ] = null
+            delete this.events[ name ]
+        }
+    }
+
+    emit( name ) {
+            
+        if ( this.events[ name ] !== undefined ) {
+            
+            let arg = arguments.length >= 2
+                ? arguments[ 1 ]
+                : undefined
+
+            this.events[ name ]( arg )
+            
+            if ( this.events[ name ]._once ) {
+                this.off( name )
+            }
+
+        }
 
     }
 
@@ -219,46 +254,4 @@ export let qsa = ( selector, node ) => {
     else {
         return Array.prototype.slice.call( document.querySelectorAll( selector ) )
     }
-}
-
-class EventBundler {
-
-    constructor() {
-        this.events = {}
-    }
-
-    on( name, handler ) {
-        this.events[ name ] = handler
-    }
-
-    once( name, handler ) {
-        handler._once = true
-        this.on( name, handler )
-    }
-
-    remove( name ) {
-        if ( this.events[ name ] !== undefined ) {
-            this.events[ name ] = null
-            delete this.events[ name ]
-        }
-    }
-
-    emit( name ) {
-            
-        if ( this.events[ name ] !== undefined ) {
-            
-            let arg = arguments.length >= 2
-                ? arguments[ 1 ]
-                : undefined
-
-            this.events[ name ]( arg )
-            
-            if ( this.events[ name ]._once ) {
-                this.off( name )
-            }
-
-        }
-
-    }
-
 }
