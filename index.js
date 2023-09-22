@@ -44,7 +44,7 @@ export default class BlazyLoader {
         
             {
                 root: this.container,
-                rootMargin: `${100 * 0.5 * ( this.view_scale - 1.0 )}% 0% ${100 * 0.5 * ( this.view_scale - 1.0 )}px 0%`,
+                rootMargin: `${100 * 0.5 * ( this.view_scale - 1.0 )}% 0% ${100 * 0.5 * ( this.view_scale - 1.0 )}% 0%`,
                 threshold: 0,
                 trackVisibility: false
             },
