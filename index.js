@@ -213,7 +213,7 @@ export default class Layzr {
     loaded( node ) {
         
         // Aborted load
-        if ( node.dataset.blazy_aborted ) {
+        if ( node.dataset.blazy_aborted === 'true' ) {
             node.dataset.blazy_aborted = false
             node.dataset.blazy_loading = false
             node.dataset.blazy_loaded = false
