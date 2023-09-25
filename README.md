@@ -19,12 +19,36 @@ And in your javascript:
 ```javascript
 import BlazyLoader from 'blazyloader'
 
-// Create a new instance
+// Create a new instance, all defaults shown below.
+// Pass in your own values for each parameter to customize the instance's behavior
 let blazy = new BlazyLoader( {
-    tag: 'blazy-src',   // default, can also do data-my-src or anything you like
-    view_scale: 2.0,    // default, multiplier of the viewport, that is the "view area"
-    unload: true,       // default is false
-    container: document.querySelector( '.container' ) //default is document.body
+    // Is not limited to "data-attributes", can be generic attributes as well
+    // <img blazy-src="http://yoururl.com/image.png">
+    tag: 'blazy-src',
+    
+    // Multiplier of the viewport, that is the "view area"
+    // Default is 2.0, which means if the viewport is 800px tall, the view area is double that,
+    // and so extends 400px above and 400px below.
+    view_scale: 2.0,
+    
+    // Set to true if you want media to be unloaded when after it exits the viewport
+    // It will seamlessly reload as soon as it re-enters the view area,
+    // but will free up resources while not needed. Reloading should hit the cache.
+    // HTML5 Video elements on iOS webkit will not use the cache on re-load... 
+    // I should add in my work around for that into this library...
+    unload: false,
+
+    // Set this to the DOM node that both has overflow scroll, and contains all assets you
+    // want to lazy load+unload
+    container: document.body,
+    
+    // If you want to bypass blazyloader and dump all blazy-src to src on instantiation
+    // Useful for SEO & crawling bots
+    bots: false,        
+    
+    // If you are using this in node.js, ie with jsdom, the `document` global is undefined
+    // Pass in the virtual document, with jsdom that would be "new JSDOM().window.document"
+    document: undefined 
 } )
 
 // Listen to events
