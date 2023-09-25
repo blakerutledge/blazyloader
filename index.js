@@ -251,6 +251,25 @@ export default class BlazyLoader {
 
     }
 
+    bots() {
+
+        let nodes = qsa(this.tag, this.container)
+       
+        nodes.forEach((node) => {
+            
+            let unset = (
+                node.dataset.blazy_loading !== 'true' &&
+                node.dataset.blazy_loaded !== 'true'
+            )
+
+            if (unset) {
+                this.set_source(node)
+            }
+            
+        } )
+
+    }
+
 }
 
 // Query Selector helper function
