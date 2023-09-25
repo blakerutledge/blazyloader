@@ -8,6 +8,9 @@ export default class BlazyLoader {
         // Set status flag that we are ready to use the instance
         this.ready = false
 
+        // Dump all deferred src's for seo bots
+        this.bots = ( options.bots === true ) || false
+
         // Identifier used to select which html nodes are to be lazy loaded
         this.tag = options.src || 'blazy-src'
 
@@ -23,6 +26,9 @@ export default class BlazyLoader {
         // Element that contains all of the media to be lazy loaded, and is also scrollable
         this.container = options.container || document.body
 
+        // Document override, for node.js use
+        this.document = options.document || document
+
         // Initialize view measurements
         this.view_center = 0
         this.view_height = 0
@@ -31,31 +37,35 @@ export default class BlazyLoader {
         // Initialize status flag
         this.checking = 0
 
-        // Initialize empty node arrays
-        this.nodes = {
-            unset: [],
-            loading: [],
-            loaded: [],
+        // Empty nodes array
+        this.nodes = []
+
+        if ( !this.bots ) {
+            
+            this.observer = new IntersectionObserver(
+            
+                ( data ) => { this.handler( data ) },
+            
+                {
+                    root: this.container,
+                    rootMargin: `${100 * 0.5 * ( this.view_scale - 1.0 )}% 0% ${100 * 0.5 * ( this.view_scale - 1.0 )}% 0%`,
+                    threshold: 0,
+                    trackVisibility: false,
+                },
+    
+            )
+            
+            // Update the nodes being observed
+            this.sync_nodes()
+
         }
-
-        this.observer = new IntersectionObserver(
-        
-            ( data ) => { this.handler( data ) },
-        
-            {
-                root: this.container,
-                rootMargin: `${100 * 0.5 * ( this.view_scale - 1.0 )}% 0% ${100 * 0.5 * ( this.view_scale - 1.0 )}% 0%`,
-                threshold: 0,
-                trackVisibility: false
-            },
-
-        )
-        
-        // Update the node arrays
-        this.sync_nodes()
 
         // We are ready for external use
         this.ready = true
+
+        if ( this.bots ) {
+            this.dump()
+        }
 
     }
 
@@ -134,7 +144,7 @@ export default class BlazyLoader {
         }
         else if ( type === 'video' ) {
             
-            let source = document.createElement( 'source' )
+            let source = this.document.createElement( 'source' )
             source.setAttribute( 'src', url )
             source.setAttribute( 'type', 'video/mp4' )
             
@@ -144,12 +154,22 @@ export default class BlazyLoader {
         }
         else if ( type === 'div' ) {
             
-            let temp = document.createElement( 'img' )
+            let temp = this.document.createElement( 'img' )
             temp.src = url
 
-            temp.addEventListener( 'load', x => {
+            // INLINE the style right away if we are dumping, otherwise, wait till the asset fully loads
+            if ( this.bots ) {
+            
                 node.style.backgroundImage = `url('${url}')`
-            }, { once: true } )
+            
+            }
+            else {
+
+                temp.addEventListener( 'load', x => {
+                    node.style.backgroundImage = `url('${url}')`
+                }, { once: true } )
+
+            }
             
         }
 
@@ -242,42 +262,43 @@ export default class BlazyLoader {
         this.observer.disconnect()
 
         // Find all nodes that match our tag
-        this.nodes.all = qsa( `[${this.tag}]`, this.container )
+        this.nodes = this.qsa( `[${this.tag}]`, this.container )
         
         // Report them to the observer
-        this.nodes.all.forEach( node => {
+        this.nodes.forEach( node => {
             this.observer.observe( node )
         } )
 
     }
 
-    bots() {
+    dump() {
 
-        let nodes = qsa(this.tag, this.container)
+        // Find all nodes that match our tag
+        this.nodes = this.qsa( `[${this.tag}]`, this.container )
        
-        nodes.forEach((node) => {
+        this.nodes.forEach( ( node ) => {
             
             let unset = (
                 node.dataset.blazy_loading !== 'true' &&
                 node.dataset.blazy_loaded !== 'true'
             )
 
-            if (unset) {
-                this.set_source(node)
+            if ( unset ) {
+                this.set_source( node )
             }
             
         } )
 
     }
-
-}
-
-// Query Selector helper function
-export let qsa = ( selector, node ) => {
-    if ( node ) {
-        return Array.prototype.slice.call( node.querySelectorAll( selector ) ) 
+    
+    // Query Selector helper function
+    qsa = ( selector, node ) => {
+        if ( node ) {
+            return Array.prototype.slice.call( node.querySelectorAll( selector ) ) 
+        }
+        else {
+            return Array.prototype.slice.call( this.document.querySelectorAll( selector ) )
+        }
     }
-    else {
-        return Array.prototype.slice.call( document.querySelectorAll( selector ) )
-    }
+
 }
